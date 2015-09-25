@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lbl_add">Adicionar</string>
+    <string name="lbl_name">Nome</string>
+    <string name="lbl_description">Descrição</string>
+    <string name="lbl_save">Salvar</string>
+    <string name="lbl_quantity">Quantidade</string>
+    <string name="lbl_min_quantity">Quantidade Mínima</string>
+    <string name="lbl_price">Valor Unitário</string>
+    <string name="msg_required">Campo Obrigatório</string>
+    <string name="msg_save_success">Produto Salvo com Sucesso</string>
+    <string name="lbl_confirm">Confirmar</string>
+    <string name="msg_confirm_delete">Você deseja excluir este arquivo?</string>
+    <string name="lbl_yes">Sim</string>
+    <string name="msg_delete_success">Excluído com sucesso!</string>
+    <string name="lbl_no">Não</string>
+    <string name="lbl_edit">Editar</string>
+    <string name="lbl_delete">Excluir</string>
+    <string name="nameTitle">Nome</string>
+    <string name="Loading">Carregando</string>
+</resources>
