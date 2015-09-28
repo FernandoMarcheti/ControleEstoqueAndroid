@@ -20,8 +20,10 @@ public final class ProductContract {
     public static final String MIN_QUANTITY = "min_quantity";
     public static final String PRICE = "price";
     public static final String IMAGE_ID = "image_id";
+    public static final String WEB_ID = "web_id";
+    public static final String DATE = "date";
 
-    public static final String[] COLUMNS = {ID, NAME, DESCRIPTION, QUANTITY, MIN_QUANTITY, PRICE, IMAGE_ID};
+    public static final String[] COLUMNS = {ID, NAME, DESCRIPTION, QUANTITY, MIN_QUANTITY, PRICE, IMAGE_ID, WEB_ID, DATE};
 
     public ProductContract() {
         super();
@@ -38,7 +40,9 @@ public final class ProductContract {
         create.append(QUANTITY + " INTEGER, ");
         create.append(MIN_QUANTITY + " INTEGER, ");
         create.append(PRICE + " REAL, ");
-        create.append(IMAGE_ID + " INTEGER ");
+        create.append(IMAGE_ID + " INTEGER, ");
+        create.append(WEB_ID + " INTEGER, ");
+        create.append(DATE + " INTEGER ");
         create.append(" ); ");
 
         return create.toString();
@@ -52,8 +56,11 @@ public final class ProductContract {
         values.put(ProductContract.QUANTITY, product.getQuantidade());
         values.put(ProductContract.MIN_QUANTITY, product.getQuantidadeMinEstoque());
         values.put(ProductContract.PRICE, product.getValorUnitario());
-        if(product.getImagem() != null)
-            values.put(ProductContract.IMAGE_ID, product.getImagem().getId());
+       // if(product.getImagem() != null)
+            //values.put(ProductContract.IMAGE_ID, product.getImagem().getId());
+
+        values.put(ProductContract.WEB_ID, product.getWebId());
+        values.put(ProductContract.DATE, product.getDate());
 
         return values;
     }
@@ -69,10 +76,13 @@ public final class ProductContract {
             product.setQuantidadeMinEstoque(cursor.getInt(cursor.getColumnIndex(ProductContract.MIN_QUANTITY)));
             product.setValorUnitario(cursor.getDouble(cursor.getColumnIndex(ProductContract.PRICE)));
 
-            if(product.getImagem() != null) {
-                Image image = new Image();
-                product.setImagem(image);
-            }
+//            if(product.getImagem() != null) {
+//                Image image = new Image();
+//                product.setImagem(image);
+//            }
+
+            product.setWebId(cursor.getLong(cursor.getColumnIndex(ProductContract.WEB_ID)));
+            product.setDate(cursor.getLong(cursor.getColumnIndex(ProductContract.DATE)));
 
             return product;
         }

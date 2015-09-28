@@ -18,4 +18,6 @@
     <string name="lbl_delete">Excluir</string>
     <string name="nameTitle">Nome</string>
     <string name="Loading">Carregando</string>
+    <string name="update_product_list">Buscarndo Produtos...</string>
+    <string name="lbl_date">Data</string>
 </resources>

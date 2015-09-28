@@ -16,9 +16,15 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import br.com.turmaformacaocast.controleestoque.R;
+import br.com.turmaformacaocast.controleestoque.controllers.Synchronized.FindProductsTask;
+import br.com.turmaformacaocast.controleestoque.controllers.Synchronized.GetAllProductsFromWebTask;
 import br.com.turmaformacaocast.controleestoque.controllers.adapters.ProductsListAdapter;
+import br.com.turmaformacaocast.controleestoque.controllers.http.ProductService;
 import br.com.turmaformacaocast.controleestoque.model.entities.Product;
+import br.com.turmaformacaocast.controleestoque.model.persistence.ProductContract;
 import br.com.turmaformacaocast.controleestoque.model.services.ProductBusinessService;
 
 
@@ -32,6 +38,29 @@ public class ProdutosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_produtos);
         bindProductList();
+
+        refrashWebList();
+    }
+
+    private void refrashWebList() {
+        new GetAllProductsFromWebTask() {
+            private ProgressDialog progressDialog;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressDialog = new ProgressDialog(ProdutosActivity.this);
+                progressDialog.setMessage("Searching products...");
+                progressDialog.show();
+            }
+
+            @Override
+            protected void onPostExecute(Void result) {
+                super.onPostExecute(result);
+                updateProducts();
+                progressDialog.dismiss();
+            }
+        }.execute();
     }
 
     private void bindProductList() {

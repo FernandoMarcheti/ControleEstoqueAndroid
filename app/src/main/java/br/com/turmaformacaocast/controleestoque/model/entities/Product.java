@@ -4,15 +4,31 @@ package br.com.turmaformacaocast.controleestoque.model.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Date;
+
 public class Product implements Parcelable {
 
+    @JsonIgnore
     private Integer id;
-    private Image imagem;
+    @JsonProperty("image")
+    private String imagem;
+    @JsonProperty("name")
     private String nome;
+    @JsonProperty("description")
     private String descricao;
+    @JsonProperty("stock")
     private Integer quantidade;
+    @JsonProperty("minimunStock")
     private Integer quantidadeMinEstoque;
+    @JsonProperty("unitaryValue")
     private Double valorUnitario;
+    @JsonProperty("id")
+    private Long webId;
+    @JsonProperty("date")
+    private Long date;
 
     public Product() {
     }
@@ -25,11 +41,11 @@ public class Product implements Parcelable {
         this.id = id;
     }
 
-    public Image getImagem() {
+    public String getImagem() {
         return imagem;
     }
 
-    public void setImagem(Image imagem) {
+    public void setImagem(String imagem) {
         this.imagem = imagem;
     }
 
@@ -73,6 +89,22 @@ public class Product implements Parcelable {
         this.valorUnitario = valorUnitario;
     }
 
+    public Long getWebId() {
+        return webId;
+    }
+
+    public void setWebId(Long webId) {
+        this.webId = webId;
+    }
+
+    public Long getDate() {
+        return date;
+    }
+
+    public void setDate(Long date) {
+        this.date = date;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,7 +121,10 @@ public class Product implements Parcelable {
             return false;
         if (quantidadeMinEstoque != null ? !quantidadeMinEstoque.equals(product.quantidadeMinEstoque) : product.quantidadeMinEstoque != null)
             return false;
-        return !(valorUnitario != null ? !valorUnitario.equals(product.valorUnitario) : product.valorUnitario != null);
+        if (valorUnitario != null ? !valorUnitario.equals(product.valorUnitario) : product.valorUnitario != null)
+            return false;
+        if (webId != null ? !webId.equals(product.webId) : product.webId != null) return false;
+        return !(date != null ? !date.equals(product.date) : product.date != null);
 
     }
 
@@ -102,6 +137,8 @@ public class Product implements Parcelable {
         result = 31 * result + (quantidade != null ? quantidade.hashCode() : 0);
         result = 31 * result + (quantidadeMinEstoque != null ? quantidadeMinEstoque.hashCode() : 0);
         result = 31 * result + (valorUnitario != null ? valorUnitario.hashCode() : 0);
+        result = 31 * result + (webId != null ? webId.hashCode() : 0);
+        result = 31 * result + (date != null ? date.hashCode() : 0);
         return result;
     }
 
@@ -109,14 +146,17 @@ public class Product implements Parcelable {
     public String toString() {
         return "Product{" +
                 "id=" + id +
-                ", imagem=" + imagem +
+                ", imagem='" + imagem + '\'' +
                 ", nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
                 ", quantidade=" + quantidade +
                 ", quantidadeMinEstoque=" + quantidadeMinEstoque +
                 ", valorUnitario=" + valorUnitario +
+                ", webId=" + webId +
+                ", date=" + date +
                 '}';
     }
+
 
     @Override
     public int describeContents() {
@@ -125,27 +165,30 @@ public class Product implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
-        dest.writeValue(this.id == null ? -1 : this.id);
-        //dest.writeParcelable(this.imagem,0);
-        dest.writeString(this.nome == null ? "" : this.nome);
-        dest.writeString(this.descricao == null ? "" : this.descricao);
-        dest.writeValue(this.quantidade == null ? -1 : this.quantidade);
-        dest.writeValue(this.quantidadeMinEstoque == null ? -1 : this.quantidadeMinEstoque);
-        dest.writeValue(this.valorUnitario == null ? -1 : this.valorUnitario);
+        dest.writeValue(this.id);
+        dest.writeString(this.imagem);
+        dest.writeString(this.nome);
+        dest.writeString(this.descricao);
+        dest.writeValue(this.quantidade);
+        dest.writeValue(this.quantidadeMinEstoque);
+        dest.writeValue(this.valorUnitario);
+        dest.writeValue(this.webId);
+        dest.writeValue(this.date);
     }
 
     protected Product(Parcel in) {
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
-        //this.imagem = in.readParcelable(Image.class.getClassLoader());
+        this.imagem = in.readString();
         this.nome = in.readString();
         this.descricao = in.readString();
         this.quantidade = (Integer) in.readValue(Integer.class.getClassLoader());
         this.quantidadeMinEstoque = (Integer) in.readValue(Integer.class.getClassLoader());
         this.valorUnitario = (Double) in.readValue(Double.class.getClassLoader());
+        this.webId = (Long) in.readValue(Long.class.getClassLoader());
+        this.date = (Long) in.readValue(Long.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Product> CREATOR = new Parcelable.Creator<Product>() {
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
         public Product createFromParcel(Parcel source) {
             return new Product(source);
         }

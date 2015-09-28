@@ -5,12 +5,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.Date;
+
 import br.com.turmaformacaocast.controleestoque.R;
+import br.com.turmaformacaocast.controleestoque.controllers.Synchronized.SaveProducts;
 import br.com.turmaformacaocast.controleestoque.model.entities.Product;
 import br.com.turmaformacaocast.controleestoque.model.services.ProductBusinessService;
 import br.com.turmaformacaocast.controleestoque.util.FormHelper;
@@ -23,6 +27,7 @@ public class ProductsFormActivity extends AppCompatActivity {
     private EditText editTextMinQuantity;
     private EditText editTextPrice;
     private EditText editTextDescription;
+    private EditText editTextDate;
     private Button buttonSave;
     private Button buttonAddImage;
     private Product product;
@@ -72,7 +77,8 @@ public class ProductsFormActivity extends AppCompatActivity {
                 !FormHelper.checkRequireFields(requiredMessage, editTextDescription) &&
                 !FormHelper.checkRequireFields(requiredMessage, editTextQuantity) &&
                 !FormHelper.checkRequireFields(requiredMessage, editTextMinQuantity) &&
-                !FormHelper.checkRequireFields(requiredMessage, editTextPrice));
+                !FormHelper.checkRequireFields(requiredMessage, editTextPrice) &&
+                !FormHelper.checkRequireFields(requiredMessage, editTextDate));
     }
 
     private void bindFields() {
@@ -80,7 +86,19 @@ public class ProductsFormActivity extends AppCompatActivity {
         bindEditTextDescription();
         bindEditTextQuantity();
         bindEditTextMinQuantity();
+        bindEditTextDate();
         bindEditTextPrice();
+    }
+
+    private void bindEditTextDate() {
+        editTextDate = (EditText) findViewById(R.id.editTextDate);
+        editTextDate.setText(product.getDate() == null ? "" : convertDate(product.getDate()));
+    }
+
+    private String convertDate(Long date) {
+        String longDate = date.toString();
+        long millisecond = Long.parseLong(longDate);
+        return DateFormat.format("dd/MM/yyyy", new Date(millisecond)).toString();
     }
 
     private void bindEditTextName() {
@@ -114,6 +132,7 @@ public class ProductsFormActivity extends AppCompatActivity {
         product.setQuantidade(Integer.valueOf(editTextQuantity.getText().toString()));
         product.setQuantidadeMinEstoque(Integer.valueOf(editTextMinQuantity.getText().toString()));
         product.setValorUnitario(Double.valueOf(editTextPrice.getText().toString()));
+        product.setDate(Long.valueOf(editTextDate.getText().toString()));
     }
 
     private class SetProducts extends AsyncTask<Void, Void, Void>{
@@ -129,7 +148,7 @@ public class ProductsFormActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            ProductBusinessService.save(product);
+            new SaveProducts().execute(product);
             return null;
         }
 

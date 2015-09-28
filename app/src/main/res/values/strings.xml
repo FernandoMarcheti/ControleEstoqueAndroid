@@ -21,4 +21,6 @@
     <string name="lbl_delete">Delete</string>
     <string name="nameTitle">Name</string>
     <string name="Loading">Loading</string>
+    <string name="update_product_list">Searching Products...</string>
+    <string name="lbl_date">Date</string>
 </resources>

@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import android.text.format.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.com.turmaformacaocast.controleestoque.R;
@@ -62,6 +64,11 @@ public class ProductsListAdapter extends BaseAdapter{
 
         TextView textViewPrice = (TextView) productsItemView.findViewById(R.id.textViewPrice);
         textViewPrice.setText(product.getValorUnitario().toString());
+
+        TextView textViewDate = (TextView) productsItemView.findViewById(R.id.textViewDate);
+        String date = product.getDate().toString();
+        Long dateFormat = Long.parseLong(date);
+        textViewDate.setText(DateFormat.format("dd/MM/yyyy", new Date(dateFormat)));
 
         return productsItemView;
     }

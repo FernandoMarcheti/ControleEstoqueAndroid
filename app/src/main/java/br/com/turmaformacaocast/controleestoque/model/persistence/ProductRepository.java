@@ -18,7 +18,7 @@ public final class ProductRepository {
         DataBaseHelper databaseHelper = DataBaseHelper.getInstance();
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
-        Cursor cursor = db.query(ProductContract.TABLE, ProductContract.COLUMNS, null, null, null, null, ProductContract.ID);
+        Cursor cursor = db.query(ProductContract.TABLE, ProductContract.COLUMNS, null, null, null, null, null);
         List<Product> values = ProductContract.getProducts(cursor);
 
         db.close();
@@ -53,5 +53,20 @@ public final class ProductRepository {
 
         db.close();
         databaseHelper.close();
+    }
+
+    public static Product getProductByWebId(Long webId) {
+        DataBaseHelper databaseHelper = DataBaseHelper.getInstance();
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+
+        String where = ProductContract.ID + " = ? ";
+        String[] params = {String.valueOf(webId)};
+
+        Cursor cursor = db.query(ProductContract.TABLE, ProductContract.COLUMNS, where, params, null, null, null);
+        Product product = ProductContract.getProduct(cursor);
+
+        db.close();
+        databaseHelper.close();
+        return product;
     }
 }
