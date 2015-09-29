@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
@@ -16,15 +14,16 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.melnykov.fab.FloatingActionButton;
+
 import java.util.List;
 
 import br.com.turmaformacaocast.controleestoque.R;
+import br.com.turmaformacaocast.controleestoque.controllers.Synchronized.DeleteProduct;
 import br.com.turmaformacaocast.controleestoque.controllers.Synchronized.FindProductsTask;
 import br.com.turmaformacaocast.controleestoque.controllers.Synchronized.GetAllProductsFromWebTask;
 import br.com.turmaformacaocast.controleestoque.controllers.adapters.ProductsListAdapter;
-import br.com.turmaformacaocast.controleestoque.controllers.http.ProductService;
 import br.com.turmaformacaocast.controleestoque.model.entities.Product;
-import br.com.turmaformacaocast.controleestoque.model.persistence.ProductContract;
 import br.com.turmaformacaocast.controleestoque.model.services.ProductBusinessService;
 
 
@@ -32,14 +31,27 @@ public class ProdutosActivity extends AppCompatActivity {
 
     private ListView listViewProducts;
     private Product selectedProduct;
+    private FloatingActionButton fabAdd;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_produtos);
         bindProductList();
+        updateProducts();
+        bindFab();
+        //refrashWebList();
+    }
 
-        refrashWebList();
+    private void bindFab() {
+        fabAdd = (FloatingActionButton) findViewById(R.id.fabAdd);
+        fabAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goToMainActivity = new Intent(ProdutosActivity.this, ProductsFormActivity.class);
+                startActivity(goToMainActivity);
+            }
+        });
     }
 
     private void refrashWebList() {
@@ -78,7 +90,7 @@ public class ProdutosActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        updateProducts();
+        new UpdateListProducts().execute();
         super.onResume();
     }
 
@@ -148,15 +160,47 @@ public class ProdutosActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ProductBusinessService.delete(selectedProduct);
+                                new DeleteProduct(){
+                                    private ProgressDialog progressDialog;
+                                    @Override
+                                    protected void onPreExecute() {
+                                        super.onPreExecute();
+                                        progressDialog = new ProgressDialog(ProdutosActivity.this);
+                                        progressDialog.setMessage(getString(R.string.msg_confirm_delete));
+                                        progressDialog.show();
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Void param) {
+                                        super.onPostExecute(param);
+                                        progressDialog.dismiss();
+                                    }
+                                }.execute(selectedProduct);
                                 selectedProduct = null;
                                 String message = getString(R.string.msg_delete_success);
-                                updateProducts();
+                                new UpdateListProducts().execute();
                                 Toast.makeText(ProdutosActivity.this, message, Toast.LENGTH_LONG).show();
                             }
                         })
                 .setNeutralButton(R.string.lbl_no, null)
                 .create()
                 .show();
+    }
+
+    private class UpdateListProducts extends FindProductsTask{
+
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(ProdutosActivity.this);
+            progressDialog.setMessage(getString(R.string.Loading));
+            progressDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(List<Product> products) {
+            progressDialog.dismiss();
+        }
     }
 }

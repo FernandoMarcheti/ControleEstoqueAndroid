@@ -53,22 +53,11 @@ public class ProductsListAdapter extends BaseAdapter{
         TextView textViewName = (TextView) productsItemView.findViewById(R.id.textViewName);
         textViewName.setText(product.getNome());
 
-        TextView textViewDescription = (TextView) productsItemView.findViewById(R.id.textViewDescription);
-        textViewDescription.setText(product.getDescricao());
-
         TextView textViewQuantity = (TextView) productsItemView.findViewById(R.id.textViewQuantity);
         textViewQuantity.setText(product.getQuantidade().toString());
 
-        TextView textViewMinQuantity = (TextView) productsItemView.findViewById(R.id.textViewMinQuantity);
-        textViewMinQuantity.setText(product.getQuantidadeMinEstoque().toString());
-
         TextView textViewPrice = (TextView) productsItemView.findViewById(R.id.textViewPrice);
         textViewPrice.setText(product.getValorUnitario().toString());
-
-        TextView textViewDate = (TextView) productsItemView.findViewById(R.id.textViewDate);
-        String date = product.getDate().toString();
-        Long dateFormat = Long.parseLong(date);
-        textViewDate.setText(DateFormat.format("dd/MM/yyyy", new Date(dateFormat)));
 
         return productsItemView;
     }
